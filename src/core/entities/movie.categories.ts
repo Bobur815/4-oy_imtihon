@@ -1,0 +1,24 @@
+import {Table, Model, Column, PrimaryKey, ForeignKey, Default, DataType,} from 'sequelize-typescript';
+import { UUIDV4 } from 'sequelize';
+import { Movie } from './movies.entity';
+import { Category } from './category.entity';
+  
+  @Table({
+    tableName: 'movie_categories',
+    underscored: true,
+  })
+  export class Movie_category extends Model {
+    @PrimaryKey
+    @Default(UUIDV4)
+    @Column(DataType.UUID)
+    declare id: string;
+  
+    @ForeignKey(() => Movie)
+    @Column(DataType.UUID)
+    movie_id: string;
+  
+    @ForeignKey(() => Category)
+    @Column(DataType.UUID)
+    category_id: string;
+  }
+  
