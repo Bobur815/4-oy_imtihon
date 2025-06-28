@@ -16,6 +16,7 @@ export class AuthController {
 
     @Post('verify')
     verify(@Body() payload: VerificationDto){
+        
         return this.authService.verify(payload)
     }
 

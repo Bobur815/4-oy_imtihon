@@ -1,7 +1,5 @@
 import { Module } from '@nestjs/common';
 import { AuthModule } from './modules/auth/auth.module';
-import { UsersService } from './modules/users/users.service';
-import { UsersController } from './modules/users/users.controller';
 import { UsersModule } from './modules/users/users.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
@@ -19,6 +17,8 @@ import { Review } from './core/entities/review.entity';
 import { UserPermission } from './core/entities/userPermission.entity';
 import { Subscription_plan } from './core/entities/subscription_plans';
 import { RedisModule } from './common/redis/redis.module';
+import { Profile } from './core/entities/profiles.entity';
+import { ProfilesModule } from './modules/profiles/profiles.module';
 
 @Module({
   imports: [
@@ -35,6 +35,7 @@ import { RedisModule } from './common/redis/redis.module';
         database: config.get<string>('DB_NAME'),
         models:[
           User,
+          Profile,
           Category,
           Movie,
           Permission,
@@ -55,7 +56,8 @@ import { RedisModule } from './common/redis/redis.module';
     }),
     AuthModule,
     UsersModule,
-    RedisModule
+    RedisModule,
+    ProfilesModule
   ]
 })
 export class AppModule {}

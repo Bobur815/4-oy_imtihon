@@ -66,10 +66,12 @@
 
         async verify(payload: VerificationDto){
             let stored = await this.redisService.get(`register:${payload.email}`)
+        
             if(!stored){
                 throw new BadRequestException('Verification code expired or not found')
             }
             let userData = JSON.parse(stored)
+            
             
             if(userData.verificationCode !== payload.code){
                 throw new BadRequestException("Verification code invalid")
@@ -94,13 +96,17 @@
                 where: {username: payload.username}
             })
             
+            if (!existingUser) {
+                throw new UnauthorizedException('Username invalid');
+            }
+
             const isMatch = await bcrypt.compare(
                 payload.password,             
                 existingUser?.dataValues.password           
             );
 
-            if (!existingUser || !isMatch) {
-                throw new UnauthorizedException('Username or password invalid');
+            if (!isMatch) {
+                throw new UnauthorizedException('Password invalid');
             }
 
             return  await this.generateToken({id:existingUser.dataValues.id, role:existingUser.dataValues.role})

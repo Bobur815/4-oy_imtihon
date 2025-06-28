@@ -1,8 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { plainToInstance } from 'class-transformer';
 import { User } from 'src/core/entities/users.entity';
-import { UserDto } from './dto/user.dto';
 
 @Injectable()
 export class UsersService {
@@ -15,5 +13,20 @@ export class UsersService {
         return await this.userModel.findAll({
             attributes: {exclude: ['password']}
         })
+    }
+
+    async getSingleUser(id:string){
+        return await this.userModel.findByPk(id)
+    }
+
+    
+    async deleteById(id:string){
+        let user = await this.userModel.findByPk(id)
+        if(!user){
+            throw new NotFoundException("User not found")
+        }
+
+        await user.destroy()
+        return 'User successfully deleted'
     }
 }

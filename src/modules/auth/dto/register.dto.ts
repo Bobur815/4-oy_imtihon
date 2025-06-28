@@ -24,34 +24,4 @@ export class AuthDto {
   @MinLength(6)
   readonly password: string;
 
-  @ApiPropertyOptional({ 
-    description: 'Avatar image' 
-  })
-  @IsOptional()
-  @IsString()
-  readonly avatar_url?: string;
-
-  @ApiPropertyOptional({ 
-    example: 'Boburmirzo Ergashev', 
-    description: 'Full name' 
-  })
-  @IsOptional()
-  @IsString()
-  readonly fullname?: string;
-
-  @ApiPropertyOptional({ 
-    example: '+998901234567', 
-    description: 'Phone number' 
-  })
-  @IsOptional()
-  @IsString()
-  readonly phone?: string;
-
-  @ApiPropertyOptional({ 
-    example: 'Uzbekistan', 
-    description: 'Country of origin' 
-  })
-  @IsOptional()
-  @IsString()
-  readonly country?: string;
 }

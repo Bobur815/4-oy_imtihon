@@ -1,4 +1,3 @@
-
 import { UUIDV4 } from "sequelize";
 import { Column, DataType, Default, HasMany, Model, PrimaryKey, Table } from "sequelize-typescript";
 import { UserRole } from "../types/userRole.type";
@@ -9,62 +8,45 @@ import { Review } from "./review.entity";
 import { WatchHistory } from "./watch.history";
 import { UserPermission } from "./userPermission.entity";
 
-
 @Table({
-    tableName: 'users',
-    underscored: true,
-  })
-  export class User extends Model {
-    @PrimaryKey
-    @Default(UUIDV4)
-    @Column(DataType.UUID)
-    declare id: string;
-  
-    @Column
-    username: string;
-  
-    @Column({
-      type: DataType.STRING,
-      allowNull: false,
-    })
-    email: string;
-  
-    @Column
-    password: string;
-  
-    @Default(UserRole.USER)
-    @Column({
-      type: DataType.ENUM(...Object.values(UserRole)),
-    })
-    role: UserRole;
-  
-    @Column
-    avatar_url: string;
-  
-    @Column
-    fullname: string;
-  
-    @Column
-    phone: string;
-  
-    @Column
-    country: string;
-  
-    @HasMany(() => User_subscriptions)
-    subscriptions: User_subscriptions[];
+  tableName: 'users',
+  underscored: true,
+})
+export class User extends Model{
+  @PrimaryKey
+  @Default(UUIDV4)
+  @Column(DataType.UUID)
+  declare id: string;
 
-    @HasMany(()=> Movie)
-    movies:Movie
+  @Column({ allowNull: false, unique: true })
+  declare username: string;
 
-    @HasMany(()=>Favorite)
-    favorites:Favorite
+  @Column({ allowNull: false, type: DataType.STRING })
+  declare email: string;
 
-    @HasMany(()=>Review)
-    reviews:Review
+  @Column({ allowNull: false })
+  declare password: string;
 
-    @HasMany(()=>WatchHistory)
-    watched_history: WatchHistory
+  @Default(UserRole.USER)
+  @Column({ type: DataType.ENUM(...Object.values(UserRole)) })
+  declare role: UserRole;
 
-    @HasMany(()=>UserPermission)
-    permissions:UserPermission
-  }
+  
+  @HasMany(() => User_subscriptions)
+  subscriptions: User_subscriptions[];
+
+  @HasMany(() => Movie)
+  movies: Movie[];
+
+  @HasMany(() => Favorite)
+  favorites: Favorite[];
+
+  @HasMany(() => Review)
+  reviews: Review[];
+
+  @HasMany(() => WatchHistory)
+  watched_history: WatchHistory[];
+
+  @HasMany(() => UserPermission)
+  permissions: UserPermission[];
+}
