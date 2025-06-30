@@ -1,6 +1,7 @@
 import { UUIDV4 } from "sequelize";
-import { Column, DataType, Default, HasMany, Model, PrimaryKey, Table } from "sequelize-typescript";
+import { BelongsToMany, Column, DataType, Default, HasMany, Model, PrimaryKey, Table } from "sequelize-typescript";
 import { Movie_category } from "./movie.categories";
+import { Movie } from "./movies.entity";
 
 @Table({
     tableName:'category',
@@ -14,17 +15,17 @@ export class Category extends Model{
     declare id: string
 
     @Column(DataType.STRING(50))
-    name: string
+    declare name: string
 
     @Column({
         type: DataType.STRING(50),
         unique: true
     })
-    slug: string;
+    declare slug: string;
 
     @Column(DataType.TEXT)
-    description: string;
+    declare description: string;
 
-    @HasMany(() => Movie_category)
-    movies: Movie_category
+    @BelongsToMany(() => Movie, () => Movie_category)
+    declare movies: Movie[];
 }

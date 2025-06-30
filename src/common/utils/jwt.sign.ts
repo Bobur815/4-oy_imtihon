@@ -2,7 +2,7 @@ import { JwtSignOptions } from "@nestjs/jwt";
 
 export const JwtAccessToken: JwtSignOptions = {
     secret:"olma",
-    expiresIn:'1h'
+    expiresIn:'1d'
 }
 export const JwtRefreshToken: JwtSignOptions = {
     secret:"olmaaaa",

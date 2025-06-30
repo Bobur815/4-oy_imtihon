@@ -5,6 +5,7 @@ import { ProfileDto } from './dto/profiledto';
 import { Profile } from 'src/core/entities/profiles.entity';
 import * as fs from 'fs';
 import * as path from 'path';
+import { responseMessage } from 'src/common/utils/response-message';
 
 @Injectable()
 export class ProfilesService {
@@ -17,7 +18,14 @@ export class ProfilesService {
     ){}
 
     async getAll(){
-        return await this.profileModel.findAll()
+        const profiles = await this.profileModel.findAll()
+        return responseMessage(undefined,profiles)
+    }
+
+    async getSingle(id:string){
+        const profile = await this.profileModel.findByPk(id)
+        if(!profile) throw new NotFoundException("Profile not found")
+        return responseMessage(undefined, profile)
     }
 
     async create(userId:string, payload: ProfileDto, filename:string){
@@ -93,5 +101,18 @@ export class ProfilesService {
             message:"Profile updated successfully",
             data:updatedProfile
         }
+    }
+
+    async deleteProfile(user_id:string){
+        const profile = await this.profileModel.findOne({
+            where: {user_id}
+        })
+        if(!profile) throw new NotFoundException('Profile not found')
+        
+        await profile.destroy()
+
+        return responseMessage('Profile successfully deleted')
+        
+        
     }
 }

@@ -1,5 +1,5 @@
 import { UUIDV4 } from "sequelize";
-import { Column, DataType, Default, HasMany, Model, PrimaryKey, Table } from "sequelize-typescript";
+import { Column, DataType, Default, HasMany, HasOne, Model, PrimaryKey, Table } from "sequelize-typescript";
 import { UserRole } from "../types/userRole.type";
 import { User_subscriptions } from "./User_subscriptions";
 import { Movie } from "./movies.entity";
@@ -7,6 +7,7 @@ import { Favorite } from "./favourite.entity";
 import { Review } from "./review.entity";
 import { WatchHistory } from "./watch.history";
 import { UserPermission } from "./userPermission.entity";
+import { Profile } from "./profiles.entity";
 
 @Table({
   tableName: 'users',
@@ -31,7 +32,9 @@ export class User extends Model{
   @Column({ type: DataType.ENUM(...Object.values(UserRole)) })
   declare role: UserRole;
 
-  
+  @HasOne(() => Profile)
+  profile: Profile;
+
   @HasMany(() => User_subscriptions)
   subscriptions: User_subscriptions[];
 

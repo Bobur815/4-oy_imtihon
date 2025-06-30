@@ -16,7 +16,7 @@ import { Language } from '../types/language.type';
   
     @ForeignKey(() => Movie)
     @Column(DataType.UUID)
-    movie_id: string;
+    declare movie_id: string;
   
     @BelongsTo(() => Movie)
     movie: Movie;
@@ -25,16 +25,16 @@ import { Language } from '../types/language.type';
       type: DataType.STRING(255),
       allowNull: false,
     })
-    file_url: string;
+    declare file_url: string;
   
     @Column({
       type: DataType.ENUM(...Object.values(VideoQuality)),
       allowNull: false,
     })
-    quality: VideoQuality;
+    declare quality: VideoQuality;
   
     @Default('uz')
     @Column(DataType.ENUM(...Object.values(Language)))
-    language: Language;
+    declare language: Language;
   }
   

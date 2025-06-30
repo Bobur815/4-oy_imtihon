@@ -15,10 +15,10 @@ import { Category } from './category.entity';
   
     @ForeignKey(() => Movie)
     @Column(DataType.UUID)
-    movie_id: string;
+    declare movie_id: string;
   
     @ForeignKey(() => Category)
     @Column(DataType.UUID)
-    category_id: string;
+    declare category_id: string;
   }
   

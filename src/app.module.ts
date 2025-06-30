@@ -19,6 +19,21 @@ import { Subscription_plan } from './core/entities/subscription_plans';
 import { RedisModule } from './common/redis/redis.module';
 import { Profile } from './core/entities/profiles.entity';
 import { ProfilesModule } from './modules/profiles/profiles.module';
+import { CategoriesModule } from './modules/categories/categories.module';
+import { MoviesService } from './modules/movies/movies.service';
+import { MoviesModule } from './modules/movies/movies.module';
+import { MovieCategoriesModule } from './modules/movie-categories/movie-categories.module';
+import { MovieFilesController } from './modules/movie-files/movie-files.controller';
+import { MovieFilesModule } from './modules/movie-files/movie-files.module';
+import { FavoriteModule } from './modules/favorite/favorite.module';
+import { PaymentsController } from './modules/payments/payments.controller';
+import { PaymentsModule } from './modules/payments/payments.module';
+import { PermissionsModule } from './modules/permissions/permissions.module';
+import { ReviewModule } from './modules/review/review.module';
+import { SubscriptionPlansModule } from './modules/subscription_plans/subscription_plans.module';
+import { UserSubscriptionModule } from './modules/user_subscription/user_subscription.module';
+import { UserPermissionModule } from './modules/user_permission/user_permission.module';
+import { WatchHistoryModule } from './modules/watch-history/watch-history.module';
 
 @Module({
   imports: [
@@ -57,7 +72,19 @@ import { ProfilesModule } from './modules/profiles/profiles.module';
     AuthModule,
     UsersModule,
     RedisModule,
-    ProfilesModule
+    ProfilesModule,
+    CategoriesModule,
+    MoviesModule,
+    MovieCategoriesModule,
+    MovieFilesModule,
+    FavoriteModule,
+    PaymentsModule,
+    PermissionsModule,
+    ReviewModule,
+    SubscriptionPlansModule,
+    UserSubscriptionModule,
+    UserPermissionModule,
+    WatchHistoryModule
   ]
 })
 export class AppModule {}

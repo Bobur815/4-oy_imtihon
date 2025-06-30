@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Param, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Put, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { UserRole } from 'src/core/types/userRole.type';
@@ -24,9 +24,21 @@ export class UsersController {
 
     @ApiBearerAuth()
     @ApiOperation({
+        summary:UserRole.SUPER_ADMIN
+    })
+    @UseGuards(JwtAuthGuard,RolesGuard)
+    @Roles(UserRole.SUPER_ADMIN)
+    @Put('role/:id')
+    changeRole(@Param('id') id:string, @Body() payload:UserRole){
+        return this.userService.changeRole(id,payload)
+    }
+
+    @ApiBearerAuth()
+    @ApiOperation({
         summary:`${UserRole.ADMIN},${UserRole.SUPER_ADMIN}`
     })
-    
+    @UseGuards(JwtAuthGuard,RolesGuard)
+    @Roles(UserRole.ADMIN,UserRole.SUPER_ADMIN)
     @Delete(':id')
     deleteUser(@Param('id') id: string){
         return this.userService.deleteById(id)
