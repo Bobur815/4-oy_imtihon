@@ -35,7 +35,7 @@ export class UserSubscriptionController {
         return this.userSubscriptionService.createSubscription(req.user.id,payload)
     }
 
-    @Post('payment')
+    @Post('purchase')
     createPayment(@Body() payload:CreatePaymentDto){
             return this.userSubscriptionService.createPayment(payload)
     }

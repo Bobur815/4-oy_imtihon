@@ -6,11 +6,11 @@ import { Roles } from 'src/core/decorators/roles.decorator';
 import { UserRole } from 'src/core/types/userRole.type';
 import { ApiBody } from '@nestjs/swagger';
 
-@Controller('subscription-plans')
+@Controller('subscription')
 export class SubscriptionPlansController {
     constructor(private readonly subscriptionPlanService:SubscriptionPlansService){}
 
-    @Get()
+    @Get('plans')
     getAll(){
         return this.subscriptionPlanService.getAll()
     }

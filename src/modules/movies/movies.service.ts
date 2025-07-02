@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { responseMessage } from 'src/common/utils/response-message';
 import { Movie } from 'src/core/entities/movies.entity';
@@ -9,6 +9,8 @@ import { Category } from 'src/core/entities/category.entity';
 import { CreateMovieFileDto, UpdateMovieFileDto } from './dto/movie.file.dto';
 import { MovieFile } from 'src/core/entities/movie.files';
 import { slugGenerator } from 'src/common/utils/slug.generator';
+import { Op } from 'sequelize';
+import { User_subscriptions } from 'src/core/entities/User_subscriptions';
 
 @Injectable()
 export class MoviesService {
@@ -16,28 +18,91 @@ export class MoviesService {
         @InjectModel(Movie)
         private readonly moviesModel: typeof Movie,
         @InjectModel(MovieFile)
-        private readonly movieFileModel: typeof MovieFile
+        private readonly movieFileModel: typeof MovieFile,
+         @InjectModel(User_subscriptions)
+        private readonly user_subscriptionsModel: typeof User_subscriptions
     ){}
 
-    async getAll(){
-        const movies = await this.moviesModel.findAll({
-            include: [
-                {
-                    model: Category,
-                    attributes: ['name'],
-                    through: { attributes: [] },
-                },
-            ],
+    async getAll(user_id:string, query: {page?: number;limit?: number;category?: string;search?: string;subscription_type?: string;}) {
+        const {
+            page = 1,
+            limit = 10,
+            category,
+            search,
+            subscription_type,
+        } = query;
+
+        const offset = (page - 1) * limit;
+        const where: any = {};
+
+        if (search) {
+            where.title = { [Op.iLike]: `%${search}%` };
+        }
+
+        if (subscription_type) {
+            where.subscription_type = subscription_type;
+        }
+
+        const include: any = [
+            {
+                model: Category,
+                attributes: ['name'],
+                through: { attributes: [] },
+                ...(category && {
+                    where: { name: { [Op.iLike]: `%${category}%` } }
+            }),
+            },
+            {
+                model: this.movieFileModel,
+                attributes: ['quality', 'language'],
+            },
+        ];
+
+        const { count, rows } = await this.moviesModel.findAndCountAll({
+            where,
+            include,
+            limit: Number(limit),
+            offset: Number(offset),
+            distinct: true,
         });
-        const result = movies.map(movie => ({
-            ...movie.get(),
-            categories: movie.categories.map(cat => cat.name),
-        }));
-        return responseMessage(undefined,result)
+
+        const userSubscription = await this.user_subscriptionsModel.findOne({
+            where: {
+            user_id,
+            status: 'active',
+            },
+        });
+
+        const movies = rows.map(movie => {
+            const hasAccess =
+            movie.subscription_type === 'free' || !!userSubscription;
+
+            return {
+                id: movie.id,
+                title: movie.title,
+                slug: movie.slug,
+                poster_url: movie.poster_url,
+                release_year: movie.release_year,
+                rating: movie.rating,
+                subscription_type: movie.subscription_type,
+                categories: movie.categories.map(cat => cat.name),
+                files: hasAccess ? movie.movie_files : [],
+            };
+        });
+
+        const pagination = {
+            total: count,
+            page: Number(page),
+            limit: Number(limit),
+            pages: Math.ceil(count / limit),
+        };
+
+        return responseMessage(undefined, { movies, pagination });
     }
 
-    async getSingle(id:string){
-        const movie = await this.moviesModel.findByPk(id, {
+
+    async getSingle(user_id:string, slug:string){
+        const movie = await this.moviesModel.findOne({where:{slug},
             include: [
                 {
                     model: Category,
@@ -52,7 +117,36 @@ export class MoviesService {
             ...movie.get(),
             categories: movie.categories.map(cat => cat.name),
         };
+
+        if (movie.subscription_type !== 'free') {
+            const userSubscription = await this.user_subscriptionsModel.findOne({
+            where: {
+                user_id,
+                status: 'active',
+            },
+            });
+
+            if (userSubscription) {
+                result.files = movie.movie_files
+            }
+        } else {
+                result.files = movie.movie_files
+        }
+
+
+        if(result.files) {
+                await this.getMovieFile(movie.id, movie.view_count)
+        }
         return responseMessage(undefined,result)
+    }
+
+    async getMovieFile(movie_id:string,view_count:number){
+        const movieFile = await this.movieFileModel.findOne({where:{movie_id}})
+        if(movieFile){
+            view_count+=1
+            await this.moviesModel.update({view_count}, {where:{id:movie_id}})
+        }
+        return movieFile
     }
 
     async createMovie(id:string, payload:MovieDto, filename:string){

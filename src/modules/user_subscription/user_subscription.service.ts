@@ -78,7 +78,11 @@ export class UserSubscriptionService {
         const newPayment = await this.paymentModel.create({
             ...payload
         })
-        return responseMessage("Payment successfully completed", newPayment)
+        const resObj = {
+            subscription:plan,
+            payment:newPayment
+        }
+        return responseMessage("Payment successfully completed", resObj)
     }
 
     async updatePayment(payment_id: string, payload: UpdatePaymentDto) {

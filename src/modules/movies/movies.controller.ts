@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Request, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, Request, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { MoviesService } from './movies.service';
 import { MovieDto, UpdateMovieDto } from './dto/dto';
 import { RequestWithUser } from '../profiles/profiles.controller';
@@ -7,7 +7,7 @@ import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { Roles } from 'src/core/decorators/roles.decorator';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { UserRole } from 'src/core/types/userRole.type';
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiParam } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { CreateMovieFileDto, UpdateMovieFileDto } from './dto/movie.file.dto';
 
 @ApiBearerAuth()
@@ -16,16 +16,22 @@ export class MoviesController {
     constructor(private readonly moviesService:MoviesService){}
 
     @Get()
-    getAll(){
-        return this.moviesService.getAll()
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @ApiQuery({
+        description: 'page?: number, limit?: number, category?: string, search?: string, subscription_type?: string'
+    })
+    getAll(@Request() req: RequestWithUser, @Query() query: any) {
+        return this.moviesService.getAll(req.user.id,query);
     }
 
-    @Get(':id')
-    getSingle(@Param('id') id:string){
-        return this.moviesService.getSingle(id)
+    @Get(':slug')
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    getSingle(@Request() req: RequestWithUser, @Param('slug') slug:string){
+        return this.moviesService.getSingle(req.user.id,slug)
     }
 
-    
     @Post()
     @ApiOperation({
         summary:`${UserRole.ADMIN}, ${UserRole.SUPER_ADMIN}`
