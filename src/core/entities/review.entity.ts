@@ -15,14 +15,14 @@ import { Movie } from './movies.entity';
   
     @ForeignKey(() => User)
     @Column(DataType.UUID)
-    user_id: string;
+    declare user_id: string;
   
     @BelongsTo(() => User)
     user: User;
   
     @ForeignKey(() => Movie)
     @Column(DataType.UUID)
-    movie_id: string;
+    declare movie_id: string;
   
     @BelongsTo(() => Movie)
     movie: Movie;
@@ -30,13 +30,13 @@ import { Movie } from './movies.entity';
     @Column({
       type: DataType.INTEGER
     })
-    rating: number;
+    declare rating: number;
   
     @Column(DataType.TEXT)
-    comment: string;
+    declare comment: string;
   
     @CreatedAt
     @Column({ field: 'created_at' })
-    created_at: Date;
+    declare created_at: Date;
   }
   

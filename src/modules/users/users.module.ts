@@ -11,6 +11,6 @@ import { Profile } from 'src/core/entities/profiles.entity';
     ],
     controllers:[UsersController],
     providers:[UsersService],
-    exports:[UsersService]
+    exports:[UsersService,SequelizeModule]
 })
 export class UsersModule {}

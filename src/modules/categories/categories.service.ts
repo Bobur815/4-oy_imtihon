@@ -52,7 +52,6 @@ export class CategoriesService {
         category.destroy()
 
         return responseMessage("Category successfull deleted")
-
     }
 }
 

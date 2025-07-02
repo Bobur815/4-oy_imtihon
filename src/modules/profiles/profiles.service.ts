@@ -6,6 +6,7 @@ import { Profile } from 'src/core/entities/profiles.entity';
 import * as fs from 'fs';
 import * as path from 'path';
 import { responseMessage } from 'src/common/utils/response-message';
+import { where } from 'sequelize';
 
 @Injectable()
 export class ProfilesService {
@@ -22,8 +23,8 @@ export class ProfilesService {
         return responseMessage(undefined,profiles)
     }
 
-    async getSingle(id:string){
-        const profile = await this.profileModel.findByPk(id)
+    async getSingle(user_id:string){
+        const profile = await this.profileModel.findOne({where:{user_id}})
         if(!profile) throw new NotFoundException("Profile not found")
         return responseMessage(undefined, profile)
     }

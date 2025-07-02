@@ -6,6 +6,12 @@ import { Category } from './category.entity';
   @Table({
     tableName: 'movie_categories',
     underscored: true,
+    indexes: [
+      {
+        unique: true,
+        fields: ['movie_id', 'category_id'],
+      },
+    ],
   })
   export class Movie_category extends Model {
     @PrimaryKey

@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, MaxLength, IsInt, Min, Max, IsUrl, IsNumber, IsEnum, IsOptional,} from 'class-validator';
+import { IsNotEmpty, IsString, MaxLength, IsInt, Min, Max, IsUrl, IsEnum, IsOptional,} from 'class-validator';
 import { SubscriptionType } from 'src/core/types/subscription.types';
 
 export class MovieDto {
@@ -8,12 +8,6 @@ export class MovieDto {
   @IsString()
   @MaxLength(100)
   title: string;
-
-  @ApiProperty({ example: 'titanic' })
-  @IsNotEmpty()
-  @IsString()
-  @MaxLength(100)
-  slug: string;
 
   @ApiProperty({
     example:
@@ -44,22 +38,12 @@ export class MovieDto {
   poster_url: string;
 
   @ApiPropertyOptional({
-    example: 8.8,
-    description: '1 decimal place, 0.0–10.0 scale',
-  })
-  @IsOptional()
-  @IsNumber()
-  @Min(0)
-  @Max(10)
-  rating?: number;
-
-  @ApiPropertyOptional({
     enum: SubscriptionType,
     example: SubscriptionType.FREE,
   })
   @IsOptional()
   @IsEnum(SubscriptionType)
-  subscription_type?: SubscriptionType;
+  subscription_type?: string;
 }
 
 

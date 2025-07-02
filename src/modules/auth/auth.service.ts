@@ -43,6 +43,7 @@
 
         }
         async register(payload: AuthDto){
+            
             let existing = await this.userModel.findOne({
                 where: {
                     [Op.or]:[{username: payload.username}]

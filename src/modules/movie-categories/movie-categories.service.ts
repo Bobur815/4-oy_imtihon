@@ -1,4 +1,4 @@
-import { Get, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Get, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Movie_category } from 'src/core/entities/movie.categories';
 import { MovieCategoryDto } from './dto/dto';
@@ -29,6 +29,15 @@ export class MovieCategoriesService {
         
         const category = await this.categoryModel.findByPk(category_id)
         if(!category) throw new NotFoundException("Category not found")
+
+        const exists = await this.movieCategoryModel.findOne({
+            where: { movie_id, category_id },
+        });
+
+        if (exists) {
+            throw new ConflictException('This category is already linked to this movie');
+        }
+
         
         const data = await this.movieCategoryModel.create({movie_id,category_id})
         return responseMessage("Category successfully added to movie",data)

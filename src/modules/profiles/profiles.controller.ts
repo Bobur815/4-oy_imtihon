@@ -29,9 +29,11 @@ export class ProfilesController {
         return this.profileService.getAll()
     }
 
-    @Get('single/:id')
-    getSingle(@Param('id') id: string){
-        return this.profileService.getSingle(id)
+    @Get('single')
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    getSingle(@Request() req: RequestWithUser){
+        return this.profileService.getSingle(req.user.id)
     }
 
     @Post('create')

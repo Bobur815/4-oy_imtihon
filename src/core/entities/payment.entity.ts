@@ -16,31 +16,31 @@ import { PaymentStatus } from "../types/status.type";
   
     @ForeignKey(() => User_subscriptions)
     @Column(DataType.UUID)
-    user_subscription_id: string;
+    declare user_subscription_id: string;
   
     @BelongsTo(() => User_subscriptions)
     user_subscription: User_subscriptions;
   
     @Column(DataType.DECIMAL(10, 2))
-    amount: number;
+    declare amount: number;
   
     @Column({
       type: DataType.ENUM(...Object.values(PaymentMethod)),
     })
-    payment_method: PaymentMethod;
+    declare payment_method: PaymentMethod;
   
     @Column(DataType.JSON)
-    payment_details: object;
+    declare payment_details: object;
   
     @Column({
       type: DataType.ENUM(...Object.values(PaymentStatus)),
     })
-    status: PaymentStatus;
+    declare status: PaymentStatus;
   
     @Column(DataType.STRING(100))
-    external_transaction_id: string;
+    declare external_transaction_id: string;
   
     @CreatedAt
     @Column({ field: 'created_at' })
-    created_at: Date;
+    declare created_at: Date;
   }

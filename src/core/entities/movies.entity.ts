@@ -44,6 +44,7 @@ export class Movie extends Model{
     @Column(DataType.STRING(255))
     declare poster_url: string;
 
+    @Default(0)
     @Column(DataType.DECIMAL(3, 1))
     declare rating: number;
 

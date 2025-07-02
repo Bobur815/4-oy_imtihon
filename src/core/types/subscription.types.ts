@@ -1,4 +1,5 @@
 export enum SubscriptionType {
-    FREE = 'free',
-    PREMIUM = 'premium',
-  }
+  FREE = 'free',
+  PREMIUM = 'premium',
+  BASICS = 'basics'
+}

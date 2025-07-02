@@ -15,26 +15,26 @@ import { Movie } from './movies.entity';
   
     @ForeignKey(() => User)
     @Column(DataType.UUID)
-    user_id: string;
+    declare user_id: string;
   
     @BelongsTo(() => User)
     user: User;
   
     @ForeignKey(() => Movie)
     @Column(DataType.UUID)
-    movie_id: string;
+    declare movie_id: string;
   
     @BelongsTo(() => Movie)
     movie: Movie;
   
     @Column(DataType.INTEGER)
-    watched_duration: number;
+    declare watched_duration: number;
   
     @Column(DataType.DECIMAL(5, 2))
-    watched_percentage: number;
+    declare watched_percentage: number;
   
     @Default(DataType.NOW)
     @Column({ field: 'last_watched', type: DataType.DATE })
-    last_watched: Date;
+    declare last_watched: Date;
   }
   
